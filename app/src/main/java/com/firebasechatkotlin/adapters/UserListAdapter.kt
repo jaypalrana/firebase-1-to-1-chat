@@ -1,14 +1,15 @@
 package com.firebasechatkotlin.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.appcompat.widget.AppCompatTextView
 import com.firebasechatkotlin.R
 import com.firebasechatkotlin.listeners.OnItemClickListener
 import com.firebasechatkotlin.models.User
-import kotlinx.android.synthetic.main.row_user_list.view.*
 
 class UserListAdapter(val context: Context, val data: ArrayList<User>) :
     RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
@@ -36,9 +37,9 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName = view.tvName
-        val tvEmailId = view.tvEmailId
-        val llMain = view.llMain
+        val tvName = view.findViewById(R.id.tvName) as AppCompatTextView
+        val tvEmailId = view.findViewById(R.id.tvEmailId) as AppCompatTextView
+        val llMain = view.findViewById(R.id.llMain) as LinearLayout
     }
 
     public fun setOnItemClickListener(listener: OnItemClickListener) {

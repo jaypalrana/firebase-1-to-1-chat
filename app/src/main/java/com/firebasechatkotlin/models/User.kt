@@ -6,9 +6,9 @@ import android.os.Parcelable
 data class User(val uid: String, var displayname: String, val email: String) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-        parcel.readString(),
-        parcel.readString(),
-        parcel.readString()
+        parcel.readString()!!,
+        parcel.readString()!!,
+        parcel.readString()!!
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -1,15 +1,16 @@
-package com.firebasechatkotlin
+package com.firebasechatkotlin.activity
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.firebase.ui.database.FirebaseRecyclerOptions
+import androidx.databinding.DataBindingUtil
+import com.firebasechatkotlin.R
 import com.firebasechatkotlin.adapters.UserListAdapter
+import com.firebasechatkotlin.databinding.ActivityChatUserListBinding
 import com.firebasechatkotlin.listeners.OnItemClickListener
 import com.firebasechatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -18,11 +19,11 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_chat_user_list.*
 
 
 class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
 
+    lateinit var activityChatUserListBinding : ActivityChatUserListBinding
     private var loggedUser: FirebaseUser? = null
     private var userList: ArrayList<User>? = ArrayList()
     private var adapter: UserListAdapter? = null
@@ -30,7 +31,10 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_user_list)
+       // setContentView(R.layout.activity_chat_user_list)
+        activityChatUserListBinding = DataBindingUtil.setContentView(this,
+            R.layout.activity_chat_user_list
+        )
 
         setTitle(R.string.chat_user_title)
 
@@ -45,7 +49,7 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item?.itemId) {
             1 -> logOut()
         }
@@ -69,11 +73,11 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
 
         query.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                progress.visibility = View.GONE
+                activityChatUserListBinding.progress.visibility = View.GONE
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                progress.visibility = View.GONE
+                activityChatUserListBinding.progress.visibility = View.GONE
                 userList?.clear()
                 for (data in p0.children) {
                     if (data.child("uid").value as String != loggedUser?.uid) {
@@ -89,6 +93,7 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
                 setAdapter()
             }
 
+
         })
     }
 
@@ -96,8 +101,9 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
         if (adapter == null) {
             adapter = UserListAdapter(this, userList!!)
             adapter?.setOnItemClickListener(this)
-            rvUserList.layoutManager = LinearLayoutManager(this)
-            rvUserList.adapter = adapter
+            activityChatUserListBinding.rvUserList.layoutManager =
+                LinearLayoutManager(this)
+            activityChatUserListBinding.rvUserList.adapter = adapter
         } else {
             adapter?.notifyDataSetChanged()
         }

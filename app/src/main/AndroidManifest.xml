@@ -12,22 +12,23 @@
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
         <activity
-                android:name=".LoginActivity"
+                android:name=".activity.LoginActivity"
                 android:screenOrientation="portrait">
 
         </activity>
         <activity
-                android:name=".SignUpActivity"
+                android:name=".activity.SignUpActivity"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".ChatUserListActivity"
+                android:name=".activity.ChatUserListActivity"
                 android:screenOrientation="portrait"/>
         <activity
-                android:name=".ChatActivity"
+                android:name=".activity.ChatActivity"
                 android:screenOrientation="portrait"/>
-        <activity android:name=".SplashActivity"
+        <activity android:name=".activity.SplashActivity"
                   android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-                  android:screenOrientation="portrait">
+                  android:screenOrientation="portrait"
+                android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

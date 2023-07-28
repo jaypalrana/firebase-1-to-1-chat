@@ -1,25 +1,28 @@
-package com.firebasechatkotlin
+package com.firebasechatkotlin.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import com.firebasechatkotlin.R
 import com.firebasechatkotlin.adapters.ChatAdapter
+import com.firebasechatkotlin.databinding.ActivityChatBinding
 import com.firebasechatkotlin.models.Message
 import com.firebasechatkotlin.models.User
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_chat.*
 
 class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
+    lateinit var activityChatBinding : ActivityChatBinding
 
     companion object {
         fun startActivity(context: Context, user: User, loggedUserId: String) {
@@ -38,8 +41,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
-
+        activityChatBinding = DataBindingUtil.setContentView(this, R.layout.activity_chat)
         user = intent.getParcelableExtra("user")
         loggedUserId = intent.getStringExtra("loggedUserId")
 
@@ -50,21 +52,22 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
         database = FirebaseDatabase.getInstance()
 
-        btnSend.setOnClickListener(this)
+        activityChatBinding.btnSend.setOnClickListener(this)
 
         getData()
     }
 
     private fun setAdapter() {
         if (adapter == null) {
-            rvMessage.layoutManager = LinearLayoutManager(this)
+            activityChatBinding.rvMessage.layoutManager =
+                LinearLayoutManager(this)
             adapter = ChatAdapter(this, messageList!!, loggedUserId!!)
-            rvMessage.adapter = adapter
+            activityChatBinding.rvMessage.adapter = adapter
         } else {
             adapter?.notifyDataSetChanged()
         }
 
-        rvMessage.scrollToPosition(messageList?.size!! - 1)
+        activityChatBinding.rvMessage.scrollToPosition(messageList?.size!! - 1)
     }
 
     private fun getData() {
@@ -73,11 +76,11 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
         query?.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-                progress.visibility = View.GONE
+                activityChatBinding.progress.visibility = View.GONE
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                progress.visibility = View.GONE
+                activityChatBinding.progress.visibility = View.GONE
                 messageList?.clear()
                 for (data in p0.children) {
                     var message: Message? = Message(
@@ -96,12 +99,12 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         })
     }
 
-    override fun onOptionsItemSelected(menuItem: MenuItem?): Boolean {
-        if (menuItem?.itemId == android.R.id.home) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item?.itemId == android.R.id.home) {
             onBackPressed()
             return true
         }
-        return super.onOptionsItemSelected(menuItem)
+        return super.onOptionsItemSelected(item)
 
     }
 
@@ -129,16 +132,16 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
         })
 
-        var message = Message(etMessage.text.toString().trim(), loggedUserId!!, user?.uid!!, System.currentTimeMillis())
+        var message = Message(activityChatBinding.etMessage.text.toString().trim(), loggedUserId!!, user?.uid!!, System.currentTimeMillis())
         firebase?.setValue(message)
 
-        etMessage.setText("")
+        activityChatBinding.etMessage.setText("")
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnSend -> {
-                if (!TextUtils.isEmpty(etMessage.text.toString().trim())) {
+                if (!TextUtils.isEmpty(activityChatBinding.etMessage.text.toString().trim())) {
                     sendMessage()
                 } else {
                     Toast.makeText(this, "Please enter a message", Toast.LENGTH_SHORT).show()

@@ -12,14 +12,14 @@
                   android:layout_width="match_parent"
                   android:padding="10dp"
                   android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:textSize="15sp"
                 android:textColor="@color/colorBlack"
                 android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvEmailId"
                 android:layout_width="match_parent"
                 android:layout_marginTop="2dp"

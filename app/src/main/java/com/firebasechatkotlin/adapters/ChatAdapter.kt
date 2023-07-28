@@ -1,17 +1,16 @@
 package com.firebasechatkotlin.adapters
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.firebasechatkotlin.R
 import com.firebasechatkotlin.listeners.OnItemClickListener
 import com.firebasechatkotlin.models.Message
 import com.firebasechatkotlin.models.User
-import kotlinx.android.synthetic.main.row_my_message.view.*
-import kotlinx.android.synthetic.main.row_user_list.view.*
 
 class ChatAdapter(val context: Context, val data: ArrayList<Message>, val loggedUId: String) :
     RecyclerView.Adapter<ChatAdapter.ViewHolder>() {
@@ -47,8 +46,8 @@ class ChatAdapter(val context: Context, val data: ArrayList<Message>, val logged
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvMessage = view.tvMessage
-        val tvTimeDate = view.tvTimeDate
+        val tvMessage = view.findViewById(R.id.tvMessage) as TextView
+        val tvTimeDate = view.findViewById(R.id.tvTimeDate) as TextView
     }
 
     public fun setOnItemClickListener(listener: OnItemClickListener) {

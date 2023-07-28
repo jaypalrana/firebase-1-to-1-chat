@@ -1,11 +1,14 @@
-package com.firebasechatkotlin
+package com.firebasechatkotlin.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import com.firebasechatkotlin.R
+import com.firebasechatkotlin.databinding.ActivityLoginBinding
 import com.firebasechatkotlin.models.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -13,35 +16,34 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import kotlinx.android.synthetic.main.activity_login.*
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private var firebaseAuth: FirebaseAuth? = null
     private var database: FirebaseDatabase? = null
+    lateinit var loginActivityBinding : ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
+        loginActivityBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         setTitle(R.string.login_title)
 
         firebaseAuth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
-        btnLogin.setOnClickListener(this)
-        tvSignup.setOnClickListener(this)
+        loginActivityBinding.btnLogin.setOnClickListener(this)
+        loginActivityBinding.tvSignup.setOnClickListener(this)
 
-        progress.visibility = View.GONE
+        loginActivityBinding.progress.visibility = View.GONE
 
     }
 
     private fun checkLogin() {
-        progress.visibility = View.VISIBLE
-        btnLogin.visibility = View.GONE
+        loginActivityBinding.progress.visibility = View.VISIBLE
+        loginActivityBinding.btnLogin.visibility = View.GONE
 
-        firebaseAuth?.signInWithEmailAndPassword(etEmailId.text.toString(), etPassword.text.toString())
+        firebaseAuth?.signInWithEmailAndPassword(loginActivityBinding.etEmailId.text.toString(), loginActivityBinding.etPassword.text.toString())
             ?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
@@ -51,8 +53,8 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                    progress.visibility = View.GONE
-                    btnLogin.visibility = View.VISIBLE
+                    loginActivityBinding.progress.visibility = View.GONE
+                    loginActivityBinding.btnLogin.visibility = View.VISIBLE
 
                 }
             }
@@ -61,9 +63,9 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btnLogin -> {
-                if (TextUtils.isEmpty(etEmailId.text)) {
+                if (TextUtils.isEmpty(loginActivityBinding.etEmailId.text)) {
                     Toast.makeText(this, "Please enter email id", Toast.LENGTH_SHORT).show()
-                } else if (TextUtils.isEmpty(etPassword.text)) {
+                } else if (TextUtils.isEmpty(loginActivityBinding.etPassword.text)) {
                     Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
                 } else {
                     checkLogin()

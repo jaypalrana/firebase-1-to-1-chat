@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:fillViewport="true"
             android:layout_height="match_parent">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMessage"
                 android:layout_width="0dp"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +41,7 @@
                 android:weightSum="10"
                 android:layout_height="wrap_content">
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etMessage"
                     android:layout_width="0dp"
                     android:hint="@string/type_a_message"
@@ -49,7 +50,7 @@
                     android:layout_marginRight="5dp"
                     android:layout_height="wrap_content"/>
 
-            <android.support.v7.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSend"
                     android:layout_width="0dp"
                     android:layout_marginLeft="5dp"
@@ -61,5 +62,6 @@
 
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+</layout>

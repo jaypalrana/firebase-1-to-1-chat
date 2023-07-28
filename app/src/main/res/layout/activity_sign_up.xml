@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<layout>
 <ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -20,7 +21,7 @@
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/tridstate1"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etName"
                 android:hint="Name"
                 android:layout_marginTop="20dp"
@@ -28,7 +29,7 @@
                 android:inputType="textEmailAddress"
                 android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etEmailId"
                 android:hint="Email"
                 android:layout_marginTop="20dp"
@@ -36,7 +37,7 @@
                 android:inputType="textEmailAddress"
                 android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etPassword"
                 android:hint="Password"
                 android:layout_marginTop="20dp"
@@ -44,7 +45,7 @@
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/etConfirmPassword"
                 android:hint="Confirm Password"
                 android:layout_marginTop="20dp"
@@ -52,7 +53,7 @@
                 android:inputType="textPassword"
                 android:layout_height="wrap_content"/>
 
-        <android.support.v7.widget.AppCompatButton
+        <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSignUp"
                 android:layout_width="match_parent"
                 android:background="@color/colorPrimaryDark"
@@ -71,3 +72,4 @@
     </LinearLayout>
 
 </ScrollView>
+</layout>

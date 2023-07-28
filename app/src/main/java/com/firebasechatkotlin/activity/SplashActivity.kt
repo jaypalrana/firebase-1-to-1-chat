@@ -1,9 +1,10 @@
-package com.firebasechatkotlin
+package com.firebasechatkotlin.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.firebasechatkotlin.R
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
