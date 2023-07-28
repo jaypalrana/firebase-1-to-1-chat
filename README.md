@@ -4,6 +4,7 @@
 ***Description - firebase-1-to-1-chat is Firebase real-time chat demo.***
 ***Project Structure -
 -- Folder structure
+```bash
 app
 |-- google-services.json
 |-- proguard-rules.pro
@@ -40,8 +41,7 @@ app
 |   |   |   |   |-- dimens.xml
 |   |   |   |   |-- strings.xml
 |   |   |   |   |-- styles.xml
-
--Project structure explanation - This project structure is Based on MVVM architecture pattern
+```
 ***
 ## Folders Details
 
