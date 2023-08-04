@@ -1,8 +1,11 @@
 # Project Details ::
-**Project Name:: firebase-1-to-1-chat*
-**Language :: Kotlin**
-***Description - firebase-1-to-1-chat is Firebase real-time chat demo.***
-***Project Structure -
+## Project Name
+firebase-1-to-1-chat*
+### Language
+Kotlin
+#### Description 
+firebase-1-to-1-chat is Firebase real-time chat demo.
+##### Project Structure -
 -- Folder structure
 ```bash
 app
@@ -76,16 +79,16 @@ The folder structure of this app is explained below:
 | app/src/res/values/string.xml                        | Add All string in this file which are used in App        |
 | app/src/res/values/styles.xml                        | Add All style in this file                               |
  
-===================================
+
 
 # Versions name with their code ::
 
 Android Studio version : Android Studio Giraffe | 2022.3.1
 
-============================================
 
 
-============================================
+
+
 ## Dependencies (Packages and Library)
 
 | name                                       | version | Details                                                                                                                     |
@@ -101,13 +104,13 @@ Android Studio version : Android Studio Giraffe | 2022.3.1
 
 
 
-===========================================
+
 
 # SDK Version supports:
 *Min SDK version required: 23*
 *TargetSdk SDK version required: 34*
 
-===========================================
+
 
 # Firebase chat demo using Kotlin
 
