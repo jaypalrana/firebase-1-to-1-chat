@@ -50,34 +50,34 @@ app
 
 The folder structure of this app is explained below:
 
-| Folder Name                                          | Description                                              |
-|------------------------------------------------------|----------------------------------------------------------|
-| app/src/main/java/com/firebasechatkotlin/activity    | This folder contains all Activity files                  |
-| app/src/main/java/com/firebasechatkotlin/adapters    | This folder contain all RecyclerView Adapter             |
-| app/src/main/java/com/firebasechatkotlin/listeners   | This folder contains all interface files                 |
-| app/src/main/java/com/firebasechatkotlin/models      | This folder contains all model files                     |
-| app/src/res/drawable-hdpi                            | App icons and Images and Drawable files(hdpi)            |
-| app/src/res/drawable-sw600dp-hdpi                    | App icons and Images and Drawable files(sw600dp-hdpi)    |
-| app/src/res/drawable-sw600dp-mdpi                    | App icons and Images and Drawable files (sw600dp-mdpi)   |
-| app/src/res/drawable-sw600dp-xhdpi                   | App icons and Images and Drawable files(sw600dp-xhdpi)   |
-| app/src/res/drawable-sw720dp-hdpi                    | App icons and Images and Drawable files(sw720dp-hdpi)    |
-| app/src/res/drawable-sw720dp-mdpi                    | App icons and Images and Drawable files(sw720dp-mdpi)    |
-| app/src/res/drawable-v24                             | App icons and Images and Drawable files                  |
-| app/src/res/drawable-xhdpi                           | App icons and Images and Drawable files                  |
-| app/src/res/drawable-xxhdpi                          | App icons and Images and Drawable files                  |
-| app/src/res/drawable                                 | App icons and Images and Drawable files                  |
-| app/src/res/layout                                   | Layout Files for Round shape watch                       |
-| app/src/res/mipmap-anydpi-v26                        | Launcher App icon                                        |
-| app/src/res/mipmap-hdpi                              | Launcher App icon                                        |
-| app/src/res/mipmap-mdpi                              | Launcher App icon                                        |
-| app/src/res/mipmap-xhdpi                             | Launcher App icon                                        | 
-| app/src/res/mipmap-xxhdpi                            | Launcher App icon                                        |
-| app/src/res/mipmap-xxxhdpi                           | Launcher App icon                                        |  
-| app/src/res/values/attr.xml                          | represents an attribute of an Element object             |
-| app/src/res/values/colors.xml                        | All Colors code Added in this file which are used in App |
-| app/src/res/values/dimens.xml                        | Add Dimen in this file                                   |
-| app/src/res/values/string.xml                        | Add All string in this file which are used in App        |
-| app/src/res/values/styles.xml                        | Add All style in this file                               |
+| Folder Name                                        | Description                                              |
+|----------------------------------------------------|----------------------------------------------------------|
+| app/src/main/java/com/firebasechatkotlin/activity  | This folder contains all Activity files                  |
+| app/src/main/java/com/firebasechatkotlin/adapters  | This folder contain all RecyclerView Adapter             |
+| app/src/main/java/com/firebasechatkotlin/listeners | This folder contains all interface files                 |
+| app/src/main/java/com/firebasechatkotlin/models    | This folder contains all model files                     |
+| app/src/res/drawable-hdpi                          | App icons and Images and Drawable files(hdpi)            |
+| app/src/res/drawable-sw600dp-hdpi                  | App icons and Images and Drawable files(sw600dp-hdpi)    |
+| app/src/res/drawable-sw600dp-mdpi                  | App icons and Images and Drawable files (sw600dp-mdpi)   |
+| app/src/res/drawable-sw600dp-xhdpi                 | App icons and Images and Drawable files(sw600dp-xhdpi)   |
+| app/src/res/drawable-sw720dp-hdpi                  | App icons and Images and Drawable files(sw720dp-hdpi)    |
+| app/src/res/drawable-sw720dp-mdpi                  | App icons and Images and Drawable files(sw720dp-mdpi)    |
+| app/src/res/drawable-v24                           | App icons and Images and Drawable files                  |
+| app/src/res/drawable-xhdpi                         | App icons and Images and Drawable files                  |
+| app/src/res/drawable-xxhdpi                        | App icons and Images and Drawable files                  |
+| app/src/res/drawable                               | App icons and Images and Drawable files                  |
+| app/src/res/layout                                 | Layout Files                                             |
+| app/src/res/mipmap-anydpi-v26                      | Launcher App icon                                        |
+| app/src/res/mipmap-hdpi                            | Launcher App icon                                        |
+| app/src/res/mipmap-mdpi                            | Launcher App icon                                        |
+| app/src/res/mipmap-xhdpi                           | Launcher App icon                                        | 
+| app/src/res/mipmap-xxhdpi                          | Launcher App icon                                        |
+| app/src/res/mipmap-xxxhdpi                         | Launcher App icon                                        |  
+| app/src/res/values/attr.xml                        | represents an attribute of an Element object             |
+| app/src/res/values/colors.xml                      | All Colors code Added in this file which are used in App |
+| app/src/res/values/dimens.xml                      | Add Dimen in this file                                   |
+| app/src/res/values/string.xml                      | Add All string in this file which are used in App        |
+| app/src/res/values/styles.xml                      | Add All style in this file                               |
  
 
 
