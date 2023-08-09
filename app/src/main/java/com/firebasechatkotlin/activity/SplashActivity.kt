@@ -4,16 +4,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
 import com.firebasechatkotlin.R
+import com.firebasechatkotlin.databinding.ActivityChatBinding
+import com.firebasechatkotlin.databinding.ActivitySplashBinding
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashActivity : AppCompatActivity() {
 
     private var firebaseAuth: FirebaseAuth? = null
+    lateinit var activitySplashBinding: ActivitySplashBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
+      activitySplashBinding = DataBindingUtil.setContentView(this,R.layout.activity_splash)
 
         firebaseAuth = FirebaseAuth.getInstance()
 

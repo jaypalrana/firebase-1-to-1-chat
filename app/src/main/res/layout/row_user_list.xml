@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<layout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/llMain"
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@drawable/ripple"
+        android:orientation="vertical">
 
-    <LinearLayout android:orientation="vertical"
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-                  android:layout_width="match_parent"
-                  android:padding="10dp"
-                  android:layout_height="wrap_content">
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvName"
+        <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/ivProfile"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:roundAsCircle="true"
+                app:placeholderImage="@mipmap/ic_launcher"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp" />
+
+        <LinearLayout
                 android:layout_width="match_parent"
-                android:textSize="15sp"
-                android:textColor="@color/colorBlack"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/ivProfile"
+                android:orientation="vertical"
+                android:padding="10dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvEmailId"
-                android:layout_width="match_parent"
-                android:layout_marginTop="2dp"
-                android:textSize="12sp"
-                android:textColor="@color/colorGrayTitle"
-                android:layout_height="wrap_content"/>
-    </LinearLayout>
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEmailId"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/colorGrayTitle"
+                    android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
     <View
             android:layout_width="match_parent"
-            android:background="@color/colorGrayTitle"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:background="@color/colorGrayTitle" />
 </LinearLayout>
+    </layout>

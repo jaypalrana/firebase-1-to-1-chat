@@ -1,27 +1,51 @@
 package com.firebasechatkotlin.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
-import com.google.firebase.auth.FirebaseAuth
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.firebasechatkotlin.R
 import com.firebasechatkotlin.databinding.ActivitySignUpBinding
+import com.firebasechatkotlin.models.User
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.OnProgressListener
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.UploadTask
+import java.io.File
 
 
 class SignUpActivity : AppCompatActivity(), View.OnClickListener {
 
+    private val REQUEST_PERMISSION: Int = 1002
+    private val SELECT_IMAGE_REQUEST: Int = 1001
     private var firebaseAuth: FirebaseAuth? = null
     lateinit var activitySignUpBinding : ActivitySignUpBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activitySignUpBinding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
+
+        activitySignUpBinding = DataBindingUtil.setContentView(this,R.layout.activity_sign_up)
         setTitle(R.string.signup_title)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -30,6 +54,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         firebaseAuth = FirebaseAuth.getInstance()
 
         activitySignUpBinding.btnSignUp.setOnClickListener(this)
+        activitySignUpBinding.ivChooseImage.setOnClickListener(this)
 
         activitySignUpBinding.progress.visibility = View.GONE
     }
@@ -47,8 +72,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     private fun signUp() {
         activitySignUpBinding.progress.visibility = View.VISIBLE
         activitySignUpBinding.btnSignUp.visibility = View.GONE
-        Log.d("TAG", "signUp:== "+activitySignUpBinding.etEmailId.text.toString()+"---"+activitySignUpBinding.etPassword.text.toString())
-        firebaseAuth?.createUserWithEmailAndPassword(activitySignUpBinding.etEmailId.text.toString(), activitySignUpBinding.etPassword.text.toString())
+        firebaseAuth?.createUserWithEmailAndPassword(
+            activitySignUpBinding.etEmailId.text.toString(),
+            activitySignUpBinding.etPassword.text.toString()
+        )
             ?.addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = firebaseAuth?.getCurrentUser()
@@ -60,17 +87,72 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                     user?.updateProfile(profileUpdates)
                         ?.addOnCompleteListener { task ->
                             if (task.isSuccessful) {
-                                Toast.makeText(this, "Sign up successfully", Toast.LENGTH_SHORT).show();
-                                finish()
+                                uploadImage(user)
+                                //insertUpdateUser(user)
                             }
                         }
                 } else {
-                    Toast.makeText(this, "Authentication failed. Please try again", Toast.LENGTH_SHORT).show();
-                    Log.d("TAG", "signUp:=== "+task.exception.toString())
+                    Toast.makeText(
+                        this,
+                        "Authentication failed. Please try again",
+                        Toast.LENGTH_SHORT
+                    ).show();
                     activitySignUpBinding.progress.visibility = View.GONE
                     activitySignUpBinding.btnSignUp.visibility = View.VISIBLE
                 }
             }
+    }
+
+    private fun uploadImage(user: FirebaseUser) {
+        var file = File(filePath.toString())
+        var storageRef: StorageReference =
+            FirebaseStorage.getInstance().reference.child("/images/" + user.uid + file.name)
+        storageRef.putFile(filePath!!)
+            .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
+                override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
+                    storageRef.downloadUrl.addOnSuccessListener(object : OnSuccessListener<Uri> {
+                        override fun onSuccess(p0: Uri?) {
+                            insertUpdateUser(user, p0?.toString()!!)
+                        }
+                    })
+                }
+            }).addOnFailureListener(object : OnFailureListener {
+                override fun onFailure(p0: java.lang.Exception) {
+                }
+
+            }).addOnProgressListener(object : OnProgressListener<UploadTask.TaskSnapshot> {
+                override fun onProgress(snapshot: UploadTask.TaskSnapshot) {
+
+                }
+            })
+    }
+
+    private fun insertUpdateUser(currentUser: FirebaseUser, profileUri: String) {
+        val firebase =
+            FirebaseDatabase.getInstance()?.reference?.child("users")?.child(currentUser.uid)
+        firebase?.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                FirebaseAuth.getInstance().signOut()
+                Toast.makeText(this@SignUpActivity, "Sign up successfully", Toast.LENGTH_SHORT)
+                    .show();
+                finish()
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+        })
+
+        var file = File(filePath.toString())
+        var userData = User(
+            currentUser.uid,
+            currentUser.displayName.toString(),
+            currentUser.email.toString(),
+            false,
+            profileUri
+        )
+        firebase?.setValue(userData)
     }
 
     override fun onClick(v: View?) {
@@ -83,17 +165,80 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 } else if (TextUtils.isEmpty(activitySignUpBinding.etPassword.text.toString().trim())) {
                     Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT).show()
                 } else if (activitySignUpBinding.etPassword.text.toString().trim().length < 8) {
-                    Toast.makeText(this, "Minimum 8 character required for password", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Minimum 8 character required for password",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 } else if (TextUtils.isEmpty(activitySignUpBinding.etConfirmPassword.text.toString().trim())) {
                     Toast.makeText(this, "Please enter confirm password", Toast.LENGTH_SHORT).show()
                 } else if (!activitySignUpBinding.etPassword.text.toString().trim().equals(activitySignUpBinding.etConfirmPassword.text.toString().trim())) {
                     Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show()
                 } else {
-                    signUp()
+                    if (filePath == null)
+                        Toast.makeText(
+                            this,
+                            "Please select profile picture",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    else
+                        signUp()
                 }
+            }
 
+            R.id.ivChooseImage -> {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        chooseImageIntent()
+                    } else {
+                        requestPermissions(
+                            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                            REQUEST_PERMISSION
+                        )
+                    }
+                } else {
+                    chooseImageIntent()
+                }
             }
         }
     }
 
+    private fun chooseImageIntent() {
+        var intent = Intent()
+        intent.setType("image/*")
+        intent.setAction(Intent.ACTION_GET_CONTENT)
+        startActivityForResult(
+            Intent.createChooser(intent, "Select Image"),
+            SELECT_IMAGE_REQUEST
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSION) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                chooseImageIntent()
+            }
+        }
+    }
+
+    var filePath: Uri? = null
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == SELECT_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
+            filePath = data.data
+
+            try {
+                var bitmap: Bitmap =
+                    MediaStore.Images.Media.getBitmap(this.contentResolver, filePath)
+                activitySignUpBinding.ivChooseImage.setImageBitmap(bitmap)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
 }

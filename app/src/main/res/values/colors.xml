@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimaryDark">#ec3f61</color>
+<!--    3700B3-->
+    <color name="colorPrimary">#fe004c</color>
+    <color name="colorAccent">#BB86FC</color>
 
     <color name="colorGrayTitle">#BBBBBB</color>
     <color name="white">#FFFFFF</color>
@@ -8,4 +11,8 @@
     <color name="shabbat_text_color">#555555</color>
     <color name="colorGrayTitle1">#ecebeb</color>
 
+    <color name="senderBgColor">#A3CC79</color>
+    <color name="receiverBgColor">#ffffff</color>
+    <color name="pink">#fe8f8f</color>
+    <color name="light_pink">#e9e0e0</color>
 </resources>

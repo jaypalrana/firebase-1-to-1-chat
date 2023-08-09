@@ -2,12 +2,11 @@ package com.firebasechatkotlin.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ceylonlabs.imageviewpopup.ImagePopup
@@ -16,13 +15,20 @@ import com.firebasechatkotlin.R
 import com.firebasechatkotlin.listeners.OnItemClickListener
 import com.firebasechatkotlin.models.User
 
-class UserListAdapter(val context: Context, val data: ArrayList<User>) :
-    RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
+
+class CreateGroupUserListAdapter(val context: Context, val data: ArrayList<User>) :
+    RecyclerView.Adapter<CreateGroupUserListAdapter.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(context).inflate(R.layout.row_user_list, p0, false))
+        return ViewHolder(
+            LayoutInflater.from(context).inflate(
+                R.layout.row_create_group_user_list,
+                p0,
+                false
+            )
+        )
     }
 
     override fun getItemCount(): Int {
@@ -34,22 +40,21 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
 
         p0.tvName.text = user.displayname
         p0.tvEmailId.text = user.email
-        p0.llMain.setOnClickListener {
-            if (listener != null) {
-                listener?.onItemClick(p0.llMain, p1, "users")
-            }
-        }
+
         p0.ivProfile.setImageURI(user.profile)
 
-        p0.ivProfile.setOnClickListener {
-            setImagePopup(user.profile!!)
+        if (user.selected) {
+            p0.cbSelect.setChecked(true)
+            user.selected = true
+        } else {
+            p0.cbSelect.setChecked(false)
+            user.selected = false
         }
 
-
-//        if (user.selected)
-//            p0.llMain.setSelected(true)
-//        else
-//            p0.llMain.setSelected(false)
+        p0.cbSelect.setOnCheckedChangeListener { view, isChecked ->
+            user.selected = isChecked
+        }
+        p0.ivProfile.setOnClickListener { setImagePopup(user.profile!!) }
 
     }
 
@@ -68,17 +73,11 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
         imagePopup.viewPopup()
     }
 
-
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName : AppCompatTextView = view.findViewById(R.id.tvName)
+        val tvName: AppCompatTextView = view.findViewById(R.id.tvName)
         val tvEmailId:AppCompatTextView = view.findViewById(R.id.tvEmailId)
         val llMain: LinearLayout = view.findViewById(R.id.llMain)
+        val cbSelect: CheckBox = view.findViewById(R.id.cbuser)
         val ivProfile: SimpleDraweeView = view.findViewById(R.id.ivProfile)
     }
-
-    public fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.listener = listener
-    }
-
-
 }

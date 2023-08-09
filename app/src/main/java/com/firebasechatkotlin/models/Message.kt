@@ -1,7 +1,14 @@
 package com.firebasechatkotlin.models
 
-import java.sql.Timestamp
+import java.io.Serializable
 
-data class Message(val message: String, val senderId: String, val receiverId: String, val timestamp: Long){
+data class Message(
+    val message: String,
+    val senderId: String,
+    val receiverId: String,
+    val timestamp: Long,
+    val image: String = "",
+    val user: User,
+) : Serializable {
 
 }

@@ -1,11 +1,11 @@
 # Project Details ::
-## Project Name
-firebase-1-to-1-chat*
-### Language
+# Project Name
+firebase-1-to-1-chat
+## Language 
 Kotlin
-#### Description 
+### Description 
 firebase-1-to-1-chat is Firebase real-time chat demo.
-##### Project Structure -
+#### Project Structure -
 -- Folder structure
 ```bash
 app
@@ -82,26 +82,25 @@ The folder structure of this app is explained below:
 
 
 # Versions name with their code ::
-
 Android Studio version : Android Studio Giraffe | 2022.3.1
-
-
-
-
 
 ## Dependencies (Packages and Library)
 
-| name                                       | version | Details                                                                                                                     |
-|--------------------------------------------|---------|-----------------------------------------------------------------------------------------------------------------------------|
-| org.jetbrains.kotlin:kotlin-stdlib-jdk7    | 1.8.0   | The Kotlin Standard Library for JDK 7, providing essential utility functions and extensions for Kotlin programming          |
-| androidx.appcompat:appcompat               | 1.6.1   | library that provides backward-compatible implementations of newer Android features and UI components                       |
-| androidx.constraintlayout:constraintlayout | 2.1.4   | library that helps to create flexible and responsive user interfaces in Android by using a constraint-based layout          |
-| androidx.recyclerview:recyclerview         | 1.3.0   | AndroidX RecyclerView is a library that provides an improved and more flexible version of the RecyclerView widget.          |  
-| com.google.firebase:firebase-core          | 21.1.1  | library is a core component of Firebase, which is a mobile and web application development platform provided by Google      |
-| com.google.firebase:firebase-auth          | 22.1.0  | It provides a set of authentication services that allow developers to add user authentication to their Android apps easily. |
-| com.google.firebase:firebase-database      | 20.2.2  | module within Firebase, Google's mobile and web application development platform. It provides a real-time NoSQL database    | 
-| com.firebaseui:firebase-ui-database        | 4.3.2   | library that provides pre-built UI components to simplify the integration of Firebase services                              |
-
+| name                                        | version | Details                                                                                                                                                                                                        |
+|---------------------------------------------|---------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| org.jetbrains.kotlin:kotlin-stdlib-jdk7     | 1.8.0   | The Kotlin Standard Library for JDK 7, providing essential utility functions and extensions for Kotlin programming                                                                                             |
+| androidx.appcompat:appcompat                | 1.6.1   | library that provides backward-compatible implementations of newer Android features and UI components                                                                                                          |
+| androidx.constraintlayout:constraintlayout  | 2.1.4   | library that helps to create flexible and responsive user interfaces in Android by using a constraint-based layout                                                                                             |
+| androidx.recyclerview:recyclerview          | 1.3.0   | AndroidX RecyclerView is a library that provides an improved and more flexible version of the RecyclerView widget.                                                                                             |  
+| com.google.firebase:firebase-core           | 21.1.1  | library is a core component of Firebase, which is a mobile and web application development platform provided by Google                                                                                         |
+| com.google.firebase:firebase-auth           | 22.1.0  | It provides a set of authentication services that allow developers to add user authentication to their Android apps easily.                                                                                    |
+| com.google.firebase:firebase-database       | 20.2.2  | module within Firebase, Google's mobile and web application development platform. It provides a real-time NoSQL database                                                                                       | 
+| com.firebaseui:firebase-ui-database         | 4.3.2   | library that provides pre-built UI components to simplify the integration of Firebase services                                                                                                                 |
+| com.google.firebase:firebase-storage        | 20.2.1  | library provided by Google Firebase for Android app development. It offers easy-to-use APIs to interact with Firebase Cloud Storage, allowing developers to store, retrieve, and manage various types of files |
+| de.hdodenhof:circleimageview                | 3.1.0   | library for Android that provides a custom ImageView implementation called CircleImageView                                                                                                                     |
+| com.github.chathuralakmal:AndroidImagePopup | 1.2.2   | library for Android that enables developers to display images in a popup window                                                                                                                                |
+| androidx.cardview:cardview                  | 1.0.0   | library in the AndroidX framework that provides a customizable and flexible CardView widget                                                                                                                    |
+| com.facebook.fresco:fresco                  | 2.2.0   | Fresco is an open-source image loading library for Android developed by Facebook                                                                                                                               |
 
 
 
@@ -112,7 +111,10 @@ Android Studio version : Android Studio Giraffe | 2022.3.1
 
 
 
+
 # Firebase chat demo using Kotlin
+
+**Currently we are working on this demo.  :**
 
 **Please change below information for Checking demo code :**
 

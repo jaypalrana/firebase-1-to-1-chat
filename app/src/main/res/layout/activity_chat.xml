@@ -1,64 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:layout_width="match_parent"
-            android:fillViewport="true"
-            android:layout_height="match_parent">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                <ImageView
+                        android:id="@+id/ivBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/ic_arrow_back"
+                        android:padding="8dp" />
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:padding="4dp"
+                        android:layout_toRightOf="@id/ivBack"
+                        android:orientation="horizontal">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                            android:id="@+id/ivProfile"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:elevation="4dp"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            app:placeholderImage="@mipmap/ic_launcher"
+                            app:roundAsCircle="true" />
+
+                    <TextView
+                            android:id="@+id/tvTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Title"
+                            android:layout_marginStart="@dimen/_4sdp"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp" />
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+
         <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvMessage"
                 android:layout_width="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_height="0dp"
                 android:layout_marginBottom="5dp"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/llBottom"
-                android:layout_height="0dp"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-        <ProgressBar android:id="@+id/progress"
-                     android:layout_width="wrap_content"
-                     app:layout_constraintStart_toStartOf="parent"
-                     app:layout_constraintEnd_toEndOf="parent"
-                     android:indeterminateTint="@color/colorPrimaryDark"
-                     app:layout_constraintBottom_toBottomOf="parent"
-                     app:layout_constraintTop_toTopOf="parent"
-                     android:layout_height="wrap_content" app:layout_constraintVertical_bias="0.45"/>
+        <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminateTint="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.45" />
 
         <LinearLayout
                 android:id="@+id/llBottom"
                 android:layout_width="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
+                android:layout_height="50dp"
                 android:background="@color/colorGrayTitle1"
+                android:orientation="horizontal"
                 android:weightSum="10"
-                android:layout_height="wrap_content">
+                android:padding="@dimen/_2sdp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
 
             <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/etMessage"
                     android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
+                    android:layout_weight="9"
+                    android:paddingStart="@dimen/_2sdp"
+                    android:background="@drawable/edittext_rounded"
                     android:hint="@string/type_a_message"
-                    android:layout_weight="8"
                     android:inputType="text"
-                    android:layout_marginRight="5dp"
-                    android:layout_height="wrap_content"/>
-
-            <androidx.appcompat.widget.AppCompatButton
+                    />
+               <androidx.appcompat.widget.AppCompatImageView
+                   android:id="@+id/addImages"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:tint="@color/colorPrimaryDark"
+                   android:src="@drawable/ic_attach"
+                   android:layout_gravity="center_vertical"/>
+           <!-- <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/btnSend"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="4dp"
                     android:layout_marginLeft="5dp"
-                    android:textColor="@color/white"
+                    android:layout_weight="2"
                     android:background="@color/colorPrimaryDark"
                     android:text="@string/send"
-                    android:layout_weight="2"
-                    android:layout_height="match_parent"/>
+                    android:textColor="@color/white" />-->
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/btnSend"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_send"
+                android:layout_weight="01"
+                android:tint="@color/colorPrimaryDark"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:padding="@dimen/_4sdp"
+                android:layout_gravity="center_horizontal|center_vertical"/>
 
         </LinearLayout>
 

@@ -2,7 +2,6 @@ package com.firebasechatkotlin.adapters
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +13,10 @@ import com.ceylonlabs.imageviewpopup.ImagePopup
 import com.facebook.drawee.view.SimpleDraweeView
 import com.firebasechatkotlin.R
 import com.firebasechatkotlin.listeners.OnItemClickListener
-import com.firebasechatkotlin.models.User
+import com.firebasechatkotlin.models.GroupModel
 
-class UserListAdapter(val context: Context, val data: ArrayList<User>) :
-    RecyclerView.Adapter<UserListAdapter.ViewHolder>() {
+class GroupListAdapter(val context: Context, val data: ArrayList<GroupModel>) :
+    RecyclerView.Adapter<GroupListAdapter.ViewHolder>() {
 
     private var listener: OnItemClickListener? = null
 
@@ -32,25 +31,17 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
         var user = data[p1]
 
-        p0.tvName.text = user.displayname
-        p0.tvEmailId.text = user.email
+        p0.tvName.text = user.groupname
+        p0.tvEmailId.text = "Users: " + user.users.size
         p0.llMain.setOnClickListener {
             if (listener != null) {
-                listener?.onItemClick(p0.llMain, p1, "users")
+                listener?.onItemClick(p0.llMain, p1, "group")
             }
         }
         p0.ivProfile.setImageURI(user.profile)
-
         p0.ivProfile.setOnClickListener {
-            setImagePopup(user.profile!!)
+            setImagePopup(user.profile)
         }
-
-
-//        if (user.selected)
-//            p0.llMain.setSelected(true)
-//        else
-//            p0.llMain.setSelected(false)
-
     }
 
     fun setImagePopup(p0: String) {
@@ -70,8 +61,8 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
 
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvName : AppCompatTextView = view.findViewById(R.id.tvName)
-        val tvEmailId:AppCompatTextView = view.findViewById(R.id.tvEmailId)
+        val tvName = view.findViewById<TextView>(R.id.tvName)
+        val tvEmailId = view.findViewById<AppCompatTextView>(R.id.tvEmailId)
         val llMain: LinearLayout = view.findViewById(R.id.llMain)
         val ivProfile: SimpleDraweeView = view.findViewById(R.id.ivProfile)
     }
