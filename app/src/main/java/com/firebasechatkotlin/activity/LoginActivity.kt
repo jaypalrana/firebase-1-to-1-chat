@@ -3,6 +3,7 @@ package com.firebasechatkotlin.activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -11,12 +12,13 @@ import com.firebasechatkotlin.R
 import com.firebasechatkotlin.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {
 
     private var firebaseAuth: FirebaseAuth? = null
-    private var database: FirebaseDatabase? = null
+    private var database: FirebaseFirestore? = null
     lateinit var activityLoginBinding : ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         setTitle(R.string.login_title)
 
         firebaseAuth = FirebaseAuth.getInstance()
-        database = FirebaseDatabase.getInstance()
+        database = FirebaseFirestore.getInstance()
 
         activityLoginBinding.btnLogin.setOnClickListener(this)
         activityLoginBinding.tvSignup.setOnClickListener(this)
@@ -52,7 +54,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                     startChatUserListActivity()
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(this, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, task.exception!!.message, Toast.LENGTH_SHORT).show()
                     activityLoginBinding.progress.visibility = View.GONE
                     activityLoginBinding.btnLogin.visibility = View.VISIBLE
 
@@ -83,27 +85,5 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         startActivity(intent)
     }
 
-//    private fun insertUpdateUser(currentUser: FirebaseUser) {
-//        val firebase = database?.reference?.child("users")?.child(currentUser.uid)
-//        firebase?.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(p0: DataSnapshot) {
-//                startChatUserListActivity()
-//            }
-//
-//            override fun onCancelled(p0: DatabaseError) {
-//
-//            }
-//
-//        })
-//
-//        var userData = User(
-//            currentUser.uid,
-//            currentUser.displayName.toString(),
-//            currentUser.email.toString(),
-//            false,
-//            currentUser.photoUrl.toString()
-//        )
-//        firebase?.setValue(userData)
-//    }
 
 }

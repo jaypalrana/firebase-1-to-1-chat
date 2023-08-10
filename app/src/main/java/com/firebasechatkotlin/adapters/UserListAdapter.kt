@@ -46,25 +46,15 @@ class UserListAdapter(val context: Context, val data: ArrayList<User>) :
         }
 
 
-//        if (user.selected)
-//            p0.llMain.setSelected(true)
-//        else
-//            p0.llMain.setSelected(false)
-
     }
 
     fun setImagePopup(p0: String) {
         var imagePopup: ImagePopup = ImagePopup(context)
-//            imagePopup.windowHeight = 800
-//            imagePopup.windowWidth = 800
         imagePopup.setFullScreen(true)
         imagePopup.backgroundColor = Color.BLACK
         imagePopup.setImageOnClickClose(true)
         imagePopup.isHideCloseIcon = false
         imagePopup.initiatePopupWithGlide(p0)
-
-//        imagePopup.initiatePopup(p0.drawable)
-
         imagePopup.viewPopup()
     }
 

@@ -14,6 +14,7 @@ import com.firebasechatkotlin.databinding.ActivityDeleteUserAccountBinding
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ActivityDeleteAccount : AppCompatActivity(), View.OnClickListener {
 
@@ -57,18 +58,18 @@ class ActivityDeleteAccount : AppCompatActivity(), View.OnClickListener {
                             .addOnCompleteListener { deleteTask ->
                                 if (deleteTask.isSuccessful) {
                                     Toast.makeText(this, "Account Deleted Successfully.", Toast.LENGTH_SHORT).show()
-                                    val database = FirebaseDatabase.getInstance()
-                                    val usersRef = database.getReference("users")
-
-                                    usersRef.child(deletedUserId).removeValue()
-                                        .addOnCompleteListener { task ->
-                                            if (task.isSuccessful) {
-
-                                            } else {
-                                                
-                                                 }
+                                    val db = FirebaseFirestore.getInstance()
+                                    val collectionReference = db.collection("users")
+                                    val documentId = deletedUserId
+                                    val documentReference = collectionReference.document(documentId)
+                                    documentReference.delete()
+                                        .addOnSuccessListener {
+                                            startActivity(Intent(this,LoginActivity::class.java))
+                                            finishAffinity()
                                         }
-                                    startActivity(Intent(this, LoginActivity::class.java))
+                                        .addOnFailureListener { e ->
+                                            // An error occurred
+                                        }
                                 }
                             }
                         binding.progress.visibility = View.GONE

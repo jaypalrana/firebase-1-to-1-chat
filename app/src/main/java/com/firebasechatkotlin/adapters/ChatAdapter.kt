@@ -38,11 +38,6 @@ class ChatAdapter(
     var dateList =ArrayList<String>()
 
     override fun onCreateViewHolder(p0: ViewGroup, type: Int): ViewHolder {
-//        return if (type == 1) {
-//            ViewHolder(LayoutInflater.from(context).inflate(R.layout.row_others_message, p0, false))
-//        } else {
-//            ViewHolder(LayoutInflater.from(context).inflate(R.layout.row_my_message, p0, false))
-//        }
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.row_my_message, p0, false))
     }
 
@@ -75,9 +70,7 @@ class ChatAdapter(
         if (getItemViewType(p1) == 1) {
             p0.relLeft.visibility = View.VISIBLE
             p0.relRight.visibility = View.GONE
-           // p0.tvLeftMessage.text = message.message
             if(message.message.isEmpty()){
-               // p0.ivImageMessage.setImageURI(message.image.toUri())
                 Glide.with(context)
                     .load(message.image.toUri())
                     .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL)) // Caches the image
@@ -129,13 +122,6 @@ class ChatAdapter(
             }
         }
 
-//        if (isGroupChat) {
-//            p0.tvName.visibility = VISIBLE
-//            p0.ivProfileImage.visibility = VISIBLE
-//        } else {
-//            p0.tvName.visibility = GONE
-//           p0.ivProfileImage.visibility = GONE
-//        }
         p0.ivRightProfile.setOnClickListener { setImagePopup(message.user.profile!!) }
         p0.ivLeftProfile.setOnClickListener { setImagePopup(message.user?.profile!!) }
         p0.itemView.setOnClickListener {
@@ -145,16 +131,11 @@ class ChatAdapter(
 
     fun setImagePopup(p0: String) {
         var imagePopup: ImagePopup = ImagePopup(context)
-//            imagePopup.windowHeight = 800
-//            imagePopup.windowWidth = 800
         imagePopup.setFullScreen(true)
         imagePopup.backgroundColor = Color.BLACK
         imagePopup.setImageOnClickClose(true)
         imagePopup.isHideCloseIcon = false
         imagePopup.initiatePopupWithGlide(p0)
-
-//        imagePopup.initiatePopup(p0.drawable)
-
         imagePopup.viewPopup()
     }
 

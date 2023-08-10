@@ -27,6 +27,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
@@ -41,11 +42,12 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
     var userList: ArrayList<User>? = ArrayList()
     var createGroupListAdapter: CreateGroupUserListAdapter? = null
     var context: Context? = null
-    lateinit var activityCreateGroupBinding : ActivityCreateGroupBinding
+    lateinit var activityCreateGroupBinding: ActivityCreateGroupBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activityCreateGroupBinding = DataBindingUtil.setContentView(this,R.layout.activity_create_group)
+        activityCreateGroupBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_create_group)
         context = this;
         loggedUser = FirebaseAuth.getInstance().currentUser
 
@@ -85,31 +87,30 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getData() {
-        var ref = FirebaseDatabase.getInstance().reference
-        var query = ref.child("users")
+        var ref = FirebaseFirestore.getInstance()
+        var query = ref.collection("users")
 
-        query.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
 
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                userList?.clear();
-                for (data in p0.children) {
-                    if (data.child("uid").value as String != loggedUser?.uid) {
+        query.get().addOnCompleteListener {
+            if (it.isSuccessful) {
+                var querySnapShot = it.getResult()
+                for (documentSnapshot in querySnapShot) {
+                    var data = documentSnapshot.data
+                    if (data.get("uid") as String != loggedUser?.uid) {
                         var user: User = User(
-                            data.child("uid").value as String,
-                            data.child("displayname").value as String,
-                            data.child("email").value as String,
+                            data.get("uid") as String,
+                            data.get("displayname") as String,
+                            data.get("email") as String,
                             false,
-                            data.child("profile").value as String
+                            data.get("profile") as String
                         )
                         userList?.add(user)
                     }
                 }
                 setAdapter()
             }
-        })
+        }
+
     }
 
     private fun setAdapter() {
@@ -134,7 +135,10 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
                     Toast.makeText(context, "Please select profile image", Toast.LENGTH_SHORT)
                         .show()
                     return
-                } else if (TextUtils.isEmpty(activityCreateGroupBinding.edtGroupName.text.toString().trim())) {
+                } else if (TextUtils.isEmpty(
+                        activityCreateGroupBinding.edtGroupName.text.toString().trim()
+                    )
+                ) {
                     Toast.makeText(context, "Please enter group name", Toast.LENGTH_SHORT).show()
                     return
                 }
@@ -148,6 +152,7 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
                     createGroupListAdapter?.data?.filter { it.selected == true } as MutableList<User>
 
                 if (selectedUsers?.size!! > 0) {
+
                     selectedUsers.add(
                         User(
                             loggedUser?.uid!!,
@@ -171,33 +176,28 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
                             override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
                                 storageRef.downloadUrl.addOnSuccessListener { uri ->
                                     var firebase =
-                                        FirebaseDatabase.getInstance().reference.child("groups")
-                                            .child(groupKey!!)
-                                    firebase.addValueEventListener(object : ValueEventListener {
-                                        override fun onCancelled(p0: DatabaseError) {
-
-                                        }
-
-                                        override fun onDataChange(p0: DataSnapshot) {
-                                            Toast.makeText(
-                                                this@CreateGroupActivity,
-                                                "Group has been created",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                            setResult(Activity.RESULT_OK)
-                                            finish()
-                                        }
-
-                                    })
-
-                                    firebase.setValue(
-                                        GroupModel(
-                                            activityCreateGroupBinding.edtGroupName.text.toString().trim(),
-                                            selectedUsers,
-                                            groupKey,
-                                            uri.toString()
-                                        )
+                                        FirebaseFirestore.getInstance().collection("groups")
+                                    var groupModel = GroupModel(
+                                        activityCreateGroupBinding.edtGroupName.text.toString()
+                                            .trim(),
+                                        selectedUsers,
+                                        groupKey!!,
+                                        uri.toString()
                                     )
+                                    firebase.add(groupModel).addOnCompleteListener {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "Group Created Successfully",
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                        finish()
+                                    }.addOnFailureListener {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            it.message,
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                    }
 
                                 }
                             }
@@ -209,8 +209,13 @@ class CreateGroupActivity : AppCompatActivity(), View.OnClickListener {
 
                         })
                 }
+                else{
+                    Toast.makeText(applicationContext,"You have not selected any users",Toast.LENGTH_LONG).show()
+                    activityCreateGroupBinding.progress.visibility = View.GONE
+                }
             }
         }
     }
+
 
 }

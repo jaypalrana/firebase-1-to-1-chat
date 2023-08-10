@@ -24,10 +24,7 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.OnProgressListener
 import com.google.firebase.storage.StorageReference
@@ -94,7 +91,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 } else {
                     Toast.makeText(
                         this,
-                        "Authentication failed. Please try again",
+                        task.exception!!.message,
                         Toast.LENGTH_SHORT
                     ).show();
                     activitySignUpBinding.progress.visibility = View.GONE
@@ -128,23 +125,8 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun insertUpdateUser(currentUser: FirebaseUser, profileUri: String) {
-        val firebase =
-            FirebaseDatabase.getInstance()?.reference?.child("users")?.child(currentUser.uid)
-        firebase?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                FirebaseAuth.getInstance().signOut()
-                Toast.makeText(this@SignUpActivity, "Sign up successfully", Toast.LENGTH_SHORT)
-                    .show();
-                finish()
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-        })
-
-        var file = File(filePath.toString())
+        val db = FirebaseFirestore.getInstance()
+        var collectionReferences = db.collection("users").document(currentUser.uid)
         var userData = User(
             currentUser.uid,
             currentUser.displayName.toString(),
@@ -152,7 +134,15 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             false,
             profileUri
         )
-        firebase?.setValue(userData)
+
+        collectionReferences.set(userData).addOnSuccessListener {
+            FirebaseAuth.getInstance().signOut()
+            Toast.makeText(this@SignUpActivity, "Sign up successfully", Toast.LENGTH_SHORT)
+                .show();
+            finish()
+        }.addOnFailureListener {
+            Toast.makeText(applicationContext,it.message,Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onClick(v: View?) {

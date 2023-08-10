@@ -46,16 +46,11 @@ class GroupListAdapter(val context: Context, val data: ArrayList<GroupModel>) :
 
     fun setImagePopup(p0: String) {
         var imagePopup: ImagePopup = ImagePopup(context)
-//            imagePopup.windowHeight = 800
-//            imagePopup.windowWidth = 800
         imagePopup.setFullScreen(true)
         imagePopup.backgroundColor = Color.BLACK
         imagePopup.setImageOnClickClose(true)
         imagePopup.isHideCloseIcon = false
         imagePopup.initiatePopupWithGlide(p0)
-
-//        imagePopup.initiatePopup(p0.drawable)
-
         imagePopup.viewPopup()
     }
 

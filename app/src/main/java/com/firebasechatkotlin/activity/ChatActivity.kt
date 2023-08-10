@@ -26,10 +26,12 @@ import com.firebasechatkotlin.models.User
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
 import java.io.File
+import java.util.Collections
 
 class ChatActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -78,27 +80,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
 
         loggedUserId = intent.getStringExtra("loggedUserId")
-
-//        if (isGroupChat) {
-//            database!!.reference.child("users").child(loggedUserId!!)
-//                .addValueEventListener(object : ValueEventListener {
-//                    override fun onCancelled(p0: DatabaseError) {
-//
-//                    }
-//
-//                    override fun onDataChange(p0: DataSnapshot) {
-//
-//                        user = p0.getValue(User::class.java)
-//
-//                        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//                        supportActionBar?.setHomeButtonEnabled(true)
-//
-//
-//                    }
-//
-//                })
-//        }
-
         getData()
     }
 
@@ -122,6 +103,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
             activityChatBinding.rvMessage.layoutManager = LinearLayoutManager(this)
             adapter = ChatAdapter(this, messageList!!, loggedUserId!!, isGroupChat)
             activityChatBinding.rvMessage.adapter = adapter
+
         } else {
             adapter?.notifyDataSetChanged()
         }
@@ -130,45 +112,67 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun getData() {
-        var query: DatabaseReference?
         if (isGroupChat) {
-            query = database?.reference?.child("message")?.child(group?.groupKey!!)
-        } else
-            query =
-                database?.reference?.child("message")
-                    ?.child(getMessageId(loggedUserId!!, user?.uid!!))
+            FirebaseFirestore.getInstance().collection("message")
+                .document(group?.groupKey!!)
+                .collection(group?.groupKey!!).get().addOnSuccessListener {
+                    activityChatBinding.progress.visibility = View.GONE
+                    messageList?.clear()
+                    for (messageData in it) {
+                        val userField = messageData.get("user") as Map<String, Any>
+                        var user = User(
+                            userField["uid"] as String,
+                            userField["displayname"] as String,
+                            userField["email"] as String,
+                            userField["selected"] as Boolean,
+                            userField["profile"] as String,
 
-        query?.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                activityChatBinding.progress.visibility = View.GONE
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                activityChatBinding.progress.visibility = View.GONE
-                messageList?.clear()
-                for (data in p0.children) {
-                    var message: Message? = Message(
-                        data.child("message").value as String,
-                        data.child("senderId").value as String,
-                        data.child("receiverId").value as String,
-                        data.child("timestamp").value as Long,
-                        data.child("image").value as String,
-                        User(
-                            data.child("user").child("uid").value as String,
-                            data.child("user").child("displayname").value as String,
-                            data.child("user").child("email").value as String,
-                            false,
-                            data.child("user").child("profile").value as String
                         )
-                    )
-                    messageList?.add(message!!)
+                        var message: Message? = Message(
+                            messageData.get("message") as String,
+                            messageData.get("senderId") as String,
+                            messageData.get("receiverId") as String,
+                            messageData.get("timestamp") as Long,
+                            messageData.get("image") as String,
+                            user
+                        )
+                        messageList?.add(message!!)
+                    }
+                }
+        } else {
+            FirebaseFirestore.getInstance().collection("message")
+                .document(getMessageId(loggedUserId!!, user?.uid!!))
+                .collection(getMessageId(loggedUserId!!, user?.uid!!)).get().addOnSuccessListener {
+                    activityChatBinding.progress.visibility = View.GONE
+                    messageList?.clear()
+                    for (messageData in it) {
+                        val userField = messageData.get("user") as Map<String, Any>
+                        var user = User(
+                            userField["uid"] as String,
+                            userField["displayname"] as String,
+                            userField["email"] as String,
+                            userField["selected"] as Boolean,
+                            userField["profile"] as String,)
 
+                        var message: Message? = Message(
+                            messageData.get("message") as String,
+                            messageData.get("senderId") as String,
+                            messageData.get("receiverId") as String,
+                            messageData.get("timestamp") as Long,
+                            messageData.get("image") as String,
+                            user)
+                        messageList?.add(message!!)
+                    }
                 }
 
-                setAdapter()
-            }
 
-        })
+        }
+        val sortedList = messageList!!.sortedBy { it.timestamp }
+        val sortedListDescending = sortedList!!.sortedByDescending { it.timestamp }
+        messageList!!.clear()
+        messageList!!.addAll(sortedListDescending)
+
+        setAdapter()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -188,45 +192,48 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun sendMessage() {
-        val key = database?.reference?.child("message")?.push()?.key
-        var firebase: DatabaseReference?
-        if (isGroupChat) {
-            firebase = database?.reference?.child("message")?.child(group?.groupKey!!)?.child(key!!)
-        } else {
-            firebase =
-                database?.reference?.child("message")
-                    ?.child(getMessageId(loggedUserId!!, user?.uid!!))
-                    ?.child(key!!)
-        }
-
-
-        firebase?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-        })
+    private fun sendMessage(imageUrl:String) {
         var message: Message?
+        var messageText = ""
+        var imageUrlString = ""
+        if(imageUrl.isEmpty()){
+            messageText = activityChatBinding.etMessage.text.toString().trim()
+        }
+        else{
+            imageUrlString = imageUrl
+        }
         if (isGroupChat) {
             message = Message(
-                activityChatBinding.etMessage.text.toString().trim(),
+                messageText,
                 loggedUserId!!,
-                "", System.currentTimeMillis(), "", user!!
+                "", System.currentTimeMillis(), imageUrlString, user!!
             )
-        } else
+            FirebaseFirestore.getInstance().collection("message").document(group?.groupKey!!)
+                .collection(group?.groupKey!!).document(
+                    System.currentTimeMillis()
+                        .toString()
+                ).set(message).addOnSuccessListener {
+
+                }
+        } else {
             message = Message(
-                activityChatBinding.etMessage.text.toString().trim(),
+                messageText,
                 loggedUserId!!,
                 user?.uid!!,
-                System.currentTimeMillis(), "", user!!
+                System.currentTimeMillis(), imageUrlString, user!!
             )
+            FirebaseFirestore.getInstance().collection("message")
+                .document(getMessageId(loggedUserId!!, user?.uid!!))
+                .collection(getMessageId(loggedUserId!!, user?.uid!!)).document(
+                    System.currentTimeMillis()
+                        .toString()
+                ).set(message).addOnSuccessListener {
 
-        firebase?.setValue(message)
+                }
 
+            messageList!!.add(message)
+            adapter!!.notifyDataSetChanged()
+        }
         activityChatBinding.etMessage.setText("")
     }
 
@@ -234,7 +241,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         when (v?.id) {
             R.id.btnSend -> {
                 if (!TextUtils.isEmpty(activityChatBinding.etMessage.text.toString().trim())) {
-                    sendMessage()
+                    sendMessage("")
                 } else {
                     Toast.makeText(this, "Please enter a message", Toast.LENGTH_SHORT).show()
                 }
@@ -285,8 +292,7 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
                     .addOnSuccessListener(object : OnSuccessListener<UploadTask.TaskSnapshot> {
                         override fun onSuccess(p0: UploadTask.TaskSnapshot?) {
                             storageRef.downloadUrl.addOnSuccessListener { uri ->
-                                Log.d("TAG", "onSuccess: "+uri)
-                                sendMessageImages(uri.toString())
+                                sendMessage(uri.toString())
                             }
                         }
                     }).addOnFailureListener(object : OnFailureListener {
@@ -301,47 +307,6 @@ class ChatActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    private fun sendMessageImages(uri:String) {
-        val key = database?.reference?.child("message")?.push()?.key
-        var firebase: DatabaseReference?
-        if (isGroupChat) {
-            firebase = database?.reference?.child("message")?.child(group?.groupKey!!)?.child(key!!)
-        } else {
-            firebase =
-                database?.reference?.child("message")
-                    ?.child(getMessageId(loggedUserId!!, user?.uid!!))
-                    ?.child(key!!)
-        }
-
-
-        firebase?.addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-        })
-        var message: Message?
-        if (isGroupChat) {
-            message = Message(
-                "",
-                loggedUserId!!,
-                "", System.currentTimeMillis(), uri, user!!
-            )
-        } else
-            message = Message(
-                "",
-                loggedUserId!!,
-                user?.uid!!,
-                System.currentTimeMillis(), uri, user!!
-            )
-
-        firebase?.setValue(message)
-
-        activityChatBinding.etMessage.setText("")
-    }
 
 }
 

@@ -1,11 +1,12 @@
 package com.firebasechatkotlin.activity
 
+import android.R.attr.data
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,13 +17,9 @@ import com.firebasechatkotlin.databinding.ActivityChatUserListBinding
 import com.firebasechatkotlin.listeners.OnItemClickListener
 import com.firebasechatkotlin.models.GroupModel
 import com.firebasechatkotlin.models.User
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
@@ -34,17 +31,18 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
     private var adapter: UserListAdapter? = null
     private var groupsAdapter: GroupListAdapter? = null
     private var user: User? = null
-    lateinit var activityChatUserListBinding : ActivityChatUserListBinding
+    lateinit var activityChatUserListBinding: ActivityChatUserListBinding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-         activityChatUserListBinding = DataBindingUtil.setContentView(this,R.layout.activity_chat_user_list)
+        activityChatUserListBinding =
+            DataBindingUtil.setContentView(this, R.layout.activity_chat_user_list)
         setTitle(R.string.chat_user_title)
 
         loggedUser = FirebaseAuth.getInstance().currentUser
 
-        getData()
+        //getData()
 
     }
 
@@ -72,7 +70,7 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
                 )
             }
 
-            3->{
+            3 -> {
                 startActivity(
                     Intent(this, ActivityDeleteAccount::class.java).putExtra(
                         "user",
@@ -83,7 +81,6 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
 
     private fun logOut() {
@@ -97,84 +94,78 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
 
     private fun getData() {
 
-        val ref = FirebaseDatabase.getInstance().reference
-        val usersQuery = ref.child("users")
-        val groupsQuery = ref.child("groups")
+        val ref = FirebaseFirestore.getInstance()
+        val usersQuery = ref.collection("users")
+        val groupsQuery = ref.collection("groups")
 
-        groupsQuery.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                activityChatUserListBinding.progress.visibility = View.GONE
-                groupList?.clear()
-
-                for (data in p0.children) {
-                    var users: ArrayList<User> = ArrayList()
-                    for (user in data.child("users").children) {
-                       var photoUrl = ""
-                        if(user.child("profile").value != null){
-                            photoUrl = user.child("profile").value as String
-                        }
-                        users.add(
-                            User(
-                                user.child("uid").value as String,
-                                user.child("displayname").value as String,
-                                user.child("email").value as String,
-                                false,
-                                photoUrl
-                            )
-                        )
-                    }
-                    if (users.any { it -> it.uid == loggedUser?.uid }) {
-                        var groupModel: GroupModel = GroupModel(
-                            data.child("groupname").value as String,
-                            data.child("users").value as List<User>,
-                            data.child("groupKey").value as String,
-                            data.child("profile").value as String
-                        )
-                        groupList?.add(groupModel)
-                    }
-                }
-                setAdapterForGroups()
-            }
-
-        })
-
-        usersQuery.addValueEventListener(object : ValueEventListener {
-            override fun onCancelled(p0: DatabaseError) {
-                activityChatUserListBinding.progress.visibility = View.GONE
-            }
-
-            override fun onDataChange(p0: DataSnapshot) {
-                activityChatUserListBinding.progress.visibility = View.GONE
-                userList?.clear()
-                for (data in p0.children) {
-
-                    if (data.child("uid").value as String != loggedUser?.uid) {
+        usersQuery.get().addOnCompleteListener {
+            activityChatUserListBinding.progress.visibility = View.GONE
+            userList!!.clear()
+            if (it.isSuccessful) {
+                var querySnapShot = it.getResult()
+                for (documentSnapshot in querySnapShot) {
+                    var data = documentSnapshot.data
+                    if (data.get("uid") as String != loggedUser?.uid) {
                         var user: User = User(
-                            data.child("uid").value as String,
-                            data.child("displayname").value as String,
-                            data.child("email").value as String,
+                            data.get("uid") as String,
+                            data.get("displayname") as String,
+                            data.get("email") as String,
                             false,
-                            data.child("profile").value as String
+                            data.get("profile") as String
                         )
                         userList?.add(user)
                     } else
                         user = User(
-                            data.child("uid").value as String,
-                            data.child("displayname").value as String,
-                            data.child("email").value as String,
+                            data.get("uid") as String,
+                            data.get("displayname") as String,
+                            data.get("email") as String,
                             false,
-                            data.child("profile").value as String
+                            data.get("profile") as String
                         )
                 }
-
                 setAdapter()
+            } else {
+                Toast.makeText(applicationContext, it.toString(), Toast.LENGTH_LONG).show()
             }
+        }
 
-        })
+
+        groupsQuery.get().addOnCompleteListener {
+            activityChatUserListBinding.progress.visibility = View.GONE
+            groupList!!.clear()
+            if (it.isSuccessful) {
+                var querySnapShot = it.getResult()
+                var users: ArrayList<User> = ArrayList()
+                for (documentSnapshot in querySnapShot) {
+                    val dataList: List<Map<String?, String>> = documentSnapshot.data.get("users") as List<Map<String?, String>>
+
+                    for (item in dataList) {
+                        var userModel:User = User(
+                            item["uid"]!!,
+                            item["displayname"]!!,
+                            item["email"]!!,
+                            item["selected"]!! as Boolean,
+                            item["profile"]!!,
+
+                        )
+                        users.add(userModel)
+                    }
+
+                    if (users.any { it -> it.uid == loggedUser?.uid }) {
+                        var groupModel: GroupModel = GroupModel(
+                            documentSnapshot.data.get("groupname") as String,
+                            users,
+                            documentSnapshot.data.get("groupKey") as String,
+                            documentSnapshot.data.get("profile") as String
+                        )
+                        groupList?.add(groupModel)
+                    }
+
+
+                }
+                setAdapterForGroups()
+            }
+        }
     }
 
     private fun setAdapterForGroups() {
@@ -216,6 +207,11 @@ class ChatUserListActivity : AppCompatActivity(), OnItemClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        getData()
+    }
+
+    override fun onResume() {
+        super.onResume()
         getData()
     }
 }

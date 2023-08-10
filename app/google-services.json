@@ -1,3 +1,47 @@
 {
-
+  "project_info": {
+    "project_number": "317028563893",
+    "project_id": "to1chat-f7aeb",
+    "storage_bucket": "to1chat-f7aeb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317028563893:android:40dae01d00ae8b8e01f7fc",
+        "android_client_info": {
+          "package_name": "com.firebasechatkotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "317028563893-qbcin3khent43lkk34bed83192kdsenk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.firebasechatkotlin",
+            "certificate_hash": "9488e69ff68b8e65a5ffa1039fe3286cf564743c"
+          }
+        },
+        {
+          "client_id": "317028563893-b6aoflphli5n4ln3n2dhf52orhen7uk9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_xypo5ZGgZ55bJmcZXMNStHy_Xq4S9LI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "317028563893-b6aoflphli5n4ln3n2dhf52orhen7uk9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
 }
